@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZR Creative Studio</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f7f4fa;
+  color: #333;
+}
+
+header {
+  background: linear-gradient(135deg, #6d2c91, #9b4fc1);
+  color: white;
+  padding: 24px 20px;
+  border-radius: 0 0 24px 24px;
+}
+
+.logo {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.subtitle {
+  opacity: .9;
+  margin-top: 5px;
+}
+
+.container {
+  padding: 20px;
+  max-width: 700px;
+  margin: auto;
+}
+
+.card {
+  background: white;
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 15px rgba(0,0,0,.06);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.stat {
+  text-align: center;
+  padding: 15px 8px;
+  border-radius: 14px;
+  background: #f2e9f7;
+}
+
+.stat b {
+  display: block;
+  font-size: 24px;
+  color: #6d2c91;
+}
+
+button {
+  border: none;
+  border-radius: 12px;
+  padding: 13px 18px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.primary {
+  background: #6d2c91;
+  color: white;
+  width: 100%;
+}
+
+.secondary {
+  background: #eee;
+  color: #444;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin-top: 6px;
+  margin-bottom: 14px;
+  font-size: 15px;
+}
+
+label {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.hidden {
+  display: none;
+}
+
+.order-item {
+  border-left: 5px solid #6d2c91;
+  padding: 12px;
+  background: #faf7fc;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.order-number {
+  font-weight: bold;
+  color: #6d2c91;
+}
+
+.badge {
+  display: inline-block;
+  background: #eee;
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.slip {
+  border: 2px dashed #777;
+  padding: 20px;
+  background: white;
+  margin-top: 15px;
+}
+
+.slip h2 {
+  text-align: center;
+  color: #6d2c91;
+}
+
+.check {
+  margin: 8px 0;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .slip, .slip * {
+    visibility: visible;
+  }
+
+  .slip {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">ZR</div>
+  <div class="subtitle">CREATIVE STUDIO</div>
+  <small>Order & Production System</small>
+</header>
+
+<div class="container">
+
+  <div id="dashboard">
+
+    <div class="card">
+      <div class="stats">
+        <div class="stat">
+          <b id="totalOrder">0</b>
+          Total
+        </div>
+
+        <div class="stat">
+          <b id="processOrder">0</b>
+          Proses
+        </div>
+
+        <div class="stat">
+          <b id="doneOrder">0</b>
+          Selesai
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <button class="primary" onclick="showForm()">
+        ＋ ORDER BARU
+      </button>
+    </div>
+
+    <div class="card">
+      <h3>📋 Order Terbaru</h3>
+      <div id="orderList"></div>
+    </div>
+
+  </div>
+
+
+  <div id="formPage" class="hidden">
+
+    <div class="card">
+      <h2>＋ Order Baru</h2>
+
+      <label>Nama Customer</label>
+      <input id="customer" placeholder="Nama customer">
+
+      <label>Produk</label>
+      <select id="product">
+        <option>Buku Tulis Custom</option>
+        <option>Buku Kontrol</option>
+        <option>Jurnal Ramadhan</option>
+        <option>Buku Doa</option>
+        <option>Worksheet</option>
+        <option>Flashcard</option>
+        <option>Paperbag</option>
+        <option>Custom Lainnya</option>
+      </select>
+
+      <label>Jumlah</label>
+      <input id="qty" type="number" placeholder="Contoh: 1000">
+
+      <label>Deadline</label>
+      <input id="deadline" type="date">
+
+      <label>Harga Total</label>
+      <input id="price" type="number" placeholder="Rp">
+
+      <label>DP / Sudah Dibayar</label>
+      <input id="dp" type="number" placeholder="Rp">
+
+      <label>Catatan</label>
+      <textarea id="note" rows="4" placeholder="Catatan produksi..."></textarea>
+
+      <button class="primary" onclick="saveOrder()">
+        💾 SIMPAN ORDER
+      </button>
+
+      <br><br>
+
+      <button class="secondary" onclick="showDashboard()">
+        ← Kembali
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div id="detailPage" class="hidden">
+
+    <div class="card">
+
+      <button class="secondary" onclick="showDashboard()">
+        ← Kembali
+      </button>
+
+      <div id="slipContainer"></div>
+
+      <br>
+
+      <button class="primary" onclick="window.print()">
+        🖨️ CETAK ORDER SLIP
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+let orders = JSON.parse(localStorage.getItem("zrOrders") || "[]");
+
+function saveData() {
+  localStorage.setItem("zrOrders", JSON.stringify(orders));
+}
+
+function getNextNumber() {
+  if (orders.length === 0) return "ZR-0001";
+
+  let last = orders[orders.length - 1].number;
+  let number = parseInt(last.replace("ZR-", "")) + 1;
+
+  return "ZR-" + String(number).padStart(4, "0");
+}
+
+function showForm() {
+  document.getElementById("dashboard").classList.add("hidden");
+  document.getElementById("detailPage").classList.add("hidden");
+  document.getElementById("formPage").classList.remove("hidden");
+}
+
+function showDashboard() {
+  document.getElementById("formPage").classList.add("hidden");
+  document.getElementById("detailPage").classList.add("hidden");
+  document.getElementById("dashboard").classList.remove("hidden");
+
+  renderOrders();
+}
+
+function saveOrder() {
+
+  let order = {
+    number: getNextNumber(),
+    customer: document.getElementById("customer").value,
+    product: document.getElementById("product").value,
+    qty: document.getElementById("qty").value,
+    deadline: document.getElementById("deadline").value,
+    price: document.getElementById("price").value,
+    dp: document.getElementById("dp").value,
+    note: document.getElementById("note").value,
+    status: "Proses",
+    created: new Date().toLocaleDateString("id-ID")
+  };
+
+  if (!order.customer || !order.qty) {
+    alert("Nama customer dan jumlah harus diisi.");
+    return;
+  }
+
+  orders.push(order);
+  saveData();
+
+  showOrder(order);
+}
+
+function renderOrders() {
+
+  let list = document.getElementById("orderList");
+
+  if (orders.length === 0) {
+    list.innerHTML = "<p>Belum ada order.</p>";
+    return;
+  }
+
+  list.innerHTML = "";
+
+  [...orders].reverse().forEach(order => {
+
+    let div = document.createElement("div");
+
+    div.className = "order-item";
+
+    div.innerHTML = `
+      <div class="order-number">${order.number}</div>
+      <b>${order.customer}</b><br>
+      ${order.product}<br>
+      Qty: ${order.qty}<br>
+      <span class="badge">${order.status}</span>
+      <br><br>
+      <button class="secondary" onclick='showOrder(${JSON.stringify(order)})'>
+        Lihat Order
+      </button>
+    `;
+
+    list.appendChild(div);
+  });
+
+  document.getElementById("totalOrder").innerText = orders.length;
+
+  document.getElementById("processOrder").innerText =
+    orders.filter(o => o.status !== "Selesai").length;
+
+  document.getElementById("doneOrder").innerText =
+    orders.filter(o => o.status === "Selesai").length;
+}
+
+function showOrder(order) {
+
+  document.getElementById("dashboard").classList.add("hidden");
+  document.getElementById("formPage").classList.add("hidden");
+  document.getElementById("detailPage").classList.remove("hidden");
+
+  let sisa = Number(order.price || 0) - Number(order.dp || 0);
+
+  document.getElementById("slipContainer").innerHTML = `
+
+    <div class="slip">
+
+      <h2>ZR CREATIVE STUDIO</h2>
+
+      <hr>
+
+      <h3 style="text-align:center;">
+        ${order.number}
+      </h3>
+
+      <p><b>Customer:</b><br>${order.customer}</p>
+
+      <p><b>Produk:</b><br>${order.product}</p>
+
+      <p><b>Jumlah:</b><br>${order.qty} pcs</p>
+
+      <p><b>Deadline:</b><br>${order.deadline || "-"}</p>
+
+      <p><b>Total:</b><br>
+      Rp ${Number(order.price || 0).toLocaleString("id-ID")}
+      </p>
+
+      <p><b>DP:</b><br>
+      Rp ${Number(order.dp || 0).toLocaleString("id-ID")}
+      </p>
+
+      <p><b>Sisa:</b><br>
+      Rp ${sisa.toLocaleString("id-ID")}
+      </p>
+
+      <hr>
+
+      <h4>CHECKLIST PRODUKSI</h4>
+
+      <div class="check">☐ File Final</div>
+      <div class="check">☐ Print</div>
+      <div class="check">☐ Potong</div>
+      <div class="check">☐ Finishing / Jilid</div>
+      <div class="check">☐ QC</div>
+      <div class="check">☐ Packing</div>
+      <div class="check">☐ Selesai</div>
+
+      <hr>
+
+      <p><b>Catatan:</b><br>
+      ${order.note || "-"}</p>
+
+      <small>
+      Dibuat: ${order.created}
+      </small>
+
+    </div>
+  `;
+}
+
+renderOrders();
+
+</script>
+
+</body>
+</html>
